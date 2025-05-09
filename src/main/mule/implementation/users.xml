@@ -7,21 +7,24 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="get-users" doc:id="3d665b20-595e-4d08-8bf7-de0d1ac4d829" >
 		<logger level="INFO" doc:name="Start flow" doc:id="121ad746-ecf6-4283-8782-32bd5ca937f6" message='#["Start flow GET users with correlationId: " ++ (vars.correlationId default "N/A")]' />
-		<ee:transform doc:name="dbQuery" doc:id="37817315-172e-42d8-8ac8-acd75b9c3645">
+		<ee:transform doc:name="Set DB query" doc:id="37817315-172e-42d8-8ac8-acd75b9c3645">
 			<ee:message>
-			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="dbQuery" ><![CDATA[%dw 2.0
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-"SELECT * FROM users_db.users"]]></ee:set-variable>
+if((!isEmpty(attributes.queryParams.firstName)) and (!isEmpty(attributes.queryParams.lastName)))
+    "SELECT * FROM users_db.users WHERE name='" ++ attributes.queryParams.firstName ++ "' AND lastName='" ++ attributes.queryParams.lastName ++ "'"
+else if(!isEmpty(attributes.queryParams.firstName))
+    "SELECT * FROM users_db.users WHERE name='" ++ attributes.queryParams.firstName ++ "'"
+else if(!isEmpty(attributes.queryParams.lastName))
+    "SELECT * FROM users_db.users WHERE lastName='" ++ attributes.queryParams.lastName ++ "'"
+else
+    "SELECT * FROM users_db.users"]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
 			</ee:variables>
 		</ee:transform>
-		<until-successful maxRetries="${untilSuccessful.maxRetries}" doc:name="Until Successful" doc:id="626f26ac-bcd2-4bec-aee6-6bc413c14089" >
-			<db:select doc:name="Select" doc:id="0c6b23b4-8b7b-4568-a301-113821ba7798" config-ref="Database_Config">
-			<db:sql><![CDATA[#[vars.dbQuery]]]></db:sql>
-		</db:select>
-		</until-successful>
+		<flow-ref doc:name="db-orchestrator-select" doc:id="70c6e30c-0d73-43e5-870d-9a5147ba2530" name="db-orchestrator-select"/>
 		<ee:transform doc:name="Payload to JSON" doc:id="8305668a-e259-4e1c-8d67-8325f8bdbeff">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
@@ -34,7 +37,51 @@ payload]]></ee:set-payload>
 		<logger level="INFO" doc:name="End flow" doc:id="46f59dcc-1a6e-4f12-b54a-67095ff75e96" message='#["Start flow GET users with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="get-users-by-id" doc:id="04028ae2-300f-4840-8538-a88bc7cb6bde" >
-		<logger level="INFO" doc:name="Logger" doc:id="f251ebbf-9df9-4569-be9b-a1cd67cd99f2" message="test" />
+		<logger level="INFO" doc:name="Start flow" doc:id="bb1dc202-5f63-467a-8d05-87066ceb73a9" message='#["Start flow GET users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
+		<ee:transform doc:name="userId" doc:id="62a536c5-ff51-4fff-92b9-49bf6a2bac9b" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="userId" ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.uriParams.userId as String default null]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="c839d100-9d74-4ce4-98bd-2cca9a2d7c46" >
+			<when expression="#[!isEmpty(vars.userId)]">
+				<ee:transform doc:name="Set DB query" doc:id="99e2e202-3d07-49fd-a0aa-c0309e3bd25e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+"SELECT * FROM users_db.users WHERE id=" ++ vars.userId]]></ee:set-payload>
+			</ee:message>
+			<ee:variables />
+		</ee:transform>
+				<flow-ref doc:name="db-orchestrator-select" doc:id="32f344db-fc9d-42ac-a9b7-43c7f2a2610b" name="db-orchestrator-select" />
+				<ee:transform doc:name="Payload to JSON" doc:id="1130b8b1-b2b9-4a1f-b24b-3b81c919d9fe">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Set empty payload" doc:id="155524de-8645-478c-bdd0-32d728371491">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[]]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="userId is empty" doc:id="87b6daf0-6c12-4a84-a5c7-ac20500913fb" message='#["userId is empty. The flow will be stopped. . ."]'/>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="End flow" doc:id="60edecf2-f2e2-4f6d-bc67-312f8ac8d27c" message='#["Start flow GET users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="post-users" doc:id="16055850-be66-4e82-b858-b6e5b5ee15b7" >
 		<logger level="INFO" doc:name="Logger" doc:id="0b9303ba-a664-4689-9f91-4430a9696d69" message="test" />
