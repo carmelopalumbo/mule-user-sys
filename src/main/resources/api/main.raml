@@ -1,0 +1,108 @@
+#%RAML 1.0
+title: mule-user-sys
+description: "TBD"
+version: v1
+mediaType: application/json
+
+protocols:
+  - HTTP
+
+baseUri: http://localhost:8082/api
+
+/health:
+   get:
+    description: Check the health of API
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            example: {
+              "message": "successful"
+            }
+
+/users:
+  get:
+    description: Retrieve a list of all users
+    queryParameters:
+      firstName:
+        type: string
+        required: false
+        description: Filter users with this name
+      lastName:
+        type: string
+        required: false
+        description: Filter users with this last name
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            example: {
+              "message": "successful"
+            }
+
+  post:
+    description: Create a new user
+    body:
+      application/json:
+        type: object
+    responses:
+      201:
+        body:
+          application/json:
+            type: object
+            example: {
+              "message": "successful"
+            }
+
+  put:
+    description: Update an existing user by ID
+    body:
+      application/json:
+        type: object
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            example: {
+            "message": "successful"
+          }
+
+  patch:
+    description: Partially update fields of an existing item by ID
+    body:
+      application/json:
+        type: object
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            example: {
+            "message": "successful"
+          }
+
+  delete:
+    description: Delete an item by ID
+    responses:
+      204:
+        description: No Content
+
+  /{userId}:
+    uriParameters:
+      userId:
+        type: string  # <-- usare string se non hai un tipo definito custom
+        description: Unique ID of the user
+
+    get:
+      description: Retrieve a single user by ID
+      responses:
+        200:
+          body:
+            application/json:
+              type: object
+              example: {
+              "message": "successful"
+            }

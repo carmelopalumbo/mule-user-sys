@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <flow name="mule-user-exp-main" doc:id="921551f6-0d50-47ea-9add-8c44cf5fdd58">
+        <http:listener doc:name="Listener" doc:id="6e721b85-bfcc-476d-9167-ea16749b5c65" config-ref="HTTP_Listener_config" path="${api.basePath}" />
+        <flow-ref doc:name="init-vars" doc:id="a71cbb00-c6bd-4181-ac8c-b09a0e393b03" name="init-vars" />
+        <apikit:router doc:name="APIkit Router" doc:id="51710f01-d961-4bd4-b69a-507628be9f13" config-ref="main-config" />
+    </flow>
+    <flow name="get:\health:main-config">
+		<flow-ref doc:name="health" doc:id="de6d22c8-3f17-44e7-aa6c-da12a85231cf" name="health"/>
+    </flow>
+	<flow name="put:\users:application\json:main-config">
+		<flow-ref doc:name="put-users" doc:id="4706b680-9261-4ac9-8adf-ff2bc055a172" name="put-users"/>
+    </flow>
+	<flow name="delete:\users:main-config">
+		<flow-ref doc:name="delete-users" doc:id="73a4a58c-7ea2-4525-b3cb-2f4fe1dcb10f" name="delete-users"/>
+    </flow>
+	<flow name="patch:\users:application\json:main-config">
+		<flow-ref doc:name="patch-users" doc:id="f41f98b8-0191-4a65-9421-cc5b48e2b55e" name="patch-users"/>
+    </flow>
+    <flow name="get:\users:main-config">
+		<flow-ref doc:name="get-users" doc:id="ae84d211-d7e0-4799-b239-424da60f7c54" name="get-users"/>
+    </flow>
+    <flow name="get:\users\(userId):main-config">
+		<flow-ref doc:name="get-users-by-id" doc:id="e0efa14c-3c6b-4273-99eb-662439b60c2b" name="get-users-by-id"/>
+    </flow>
+    <flow name="post:\users:application\json:main-config">
+		<flow-ref doc:name="post-users" doc:id="39824f53-c792-437d-9cc7-c36148a3dffd" name="post-users"/>
+    </flow>
+</mule>

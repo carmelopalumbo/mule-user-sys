@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="get-users" doc:id="3d665b20-595e-4d08-8bf7-de0d1ac4d829" >
+		<logger level="INFO" doc:name="Logger" doc:id="c19c46df-7e5f-421d-8b16-f163016cf9d1" message="test"/>
+	</sub-flow>
+	<sub-flow name="get-users-by-id" doc:id="04028ae2-300f-4840-8538-a88bc7cb6bde" >
+		<logger level="INFO" doc:name="Logger" doc:id="f251ebbf-9df9-4569-be9b-a1cd67cd99f2" message="test" />
+	</sub-flow>
+	<sub-flow name="post-users" doc:id="16055850-be66-4e82-b858-b6e5b5ee15b7" >
+		<logger level="INFO" doc:name="Logger" doc:id="0b9303ba-a664-4689-9f91-4430a9696d69" message="test" />
+	</sub-flow>
+	<sub-flow name="put-users" doc:id="a085e5e6-8f8d-4f09-bbcd-9410dbe16604" >
+		<logger level="INFO" doc:name="Logger" doc:id="41184d2c-74f8-46cc-989a-23ae333c0320" message="test" />
+	</sub-flow>
+	<sub-flow name="patch-users" doc:id="f6e81dca-30a4-452f-bb85-6fabafb8641f" >
+		<logger level="INFO" doc:name="Logger" doc:id="f669e289-6cf9-40cc-997d-5b8765cdfc5b" message="test" />
+	</sub-flow>
+	<sub-flow name="delete-users" doc:id="d2c4cb1b-6b78-4269-af46-ce398f3b0440" >
+		<logger level="INFO" doc:name="Logger" doc:id="3e8d8c40-be66-47d4-b039-361548be78df" message="test" />
+	</sub-flow>
+</mule>
