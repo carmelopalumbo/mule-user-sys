@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="get-users" doc:id="3d665b20-595e-4d08-8bf7-de0d1ac4d829" >
-		<logger level="INFO" doc:name="Logger" doc:id="c19c46df-7e5f-421d-8b16-f163016cf9d1" message="test"/>
+		<db:select doc:name="Select" doc:id="0c6b23b4-8b7b-4568-a301-113821ba7798" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM users_db.users]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="37817315-172e-42d8-8ac8-acd75b9c3645" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="c19c46df-7e5f-421d-8b16-f163016cf9d1" message="test" />
 	</sub-flow>
 	<sub-flow name="get-users-by-id" doc:id="04028ae2-300f-4840-8538-a88bc7cb6bde" >
 		<logger level="INFO" doc:name="Logger" doc:id="f251ebbf-9df9-4569-be9b-a1cd67cd99f2" message="test" />
