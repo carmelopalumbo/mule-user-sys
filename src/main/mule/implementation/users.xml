@@ -6,18 +6,32 @@
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="get-users" doc:id="3d665b20-595e-4d08-8bf7-de0d1ac4d829" >
-		<db:select doc:name="Select" doc:id="0c6b23b4-8b7b-4568-a301-113821ba7798" config-ref="Database_Config">
-			<db:sql ><![CDATA[SELECT * FROM users_db.users]]></db:sql>
+		<logger level="INFO" doc:name="Start flow" doc:id="121ad746-ecf6-4283-8782-32bd5ca937f6" message='#["Start flow GET users with correlationId: " ++ (vars.correlationId default "N/A")]' />
+		<ee:transform doc:name="dbQuery" doc:id="37817315-172e-42d8-8ac8-acd75b9c3645">
+			<ee:message>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="dbQuery" ><![CDATA[%dw 2.0
+output application/json
+---
+"SELECT * FROM users_db.users"]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<until-successful maxRetries="${untilSuccessful.maxRetries}" doc:name="Until Successful" doc:id="626f26ac-bcd2-4bec-aee6-6bc413c14089" >
+			<db:select doc:name="Select" doc:id="0c6b23b4-8b7b-4568-a301-113821ba7798" config-ref="Database_Config">
+			<db:sql><![CDATA[#[vars.dbQuery]]]></db:sql>
 		</db:select>
-		<ee:transform doc:name="Transform Message" doc:id="37817315-172e-42d8-8ac8-acd75b9c3645" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		</until-successful>
+		<ee:transform doc:name="Payload to JSON" doc:id="8305668a-e259-4e1c-8d67-8325f8bdbeff">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="c19c46df-7e5f-421d-8b16-f163016cf9d1" message="test" />
+		<logger level="DEBUG" doc:name="Debug payload after SELECT" doc:id="6caaf2e2-9dfc-4c09-9f73-52b3b69a9ba3" message='#["DEBUG payload after SELECT: " ++ payload.^raw]'/>
+		<logger level="INFO" doc:name="End flow" doc:id="46f59dcc-1a6e-4f12-b54a-67095ff75e96" message='#["Start flow GET users with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="get-users-by-id" doc:id="04028ae2-300f-4840-8538-a88bc7cb6bde" >
 		<logger level="INFO" doc:name="Logger" doc:id="f251ebbf-9df9-4569-be9b-a1cd67cd99f2" message="test" />

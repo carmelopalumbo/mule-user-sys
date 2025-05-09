@@ -1,2 +1,5 @@
 api:
   basePath: "/api/*"
+  
+untilSuccessful:
+  maxRetries: "5"
