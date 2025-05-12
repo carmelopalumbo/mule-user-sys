@@ -85,12 +85,6 @@ uses:
             "message": "successful"
           }
 
-  delete:
-    description: Delete an item by ID
-    responses:
-      204:
-        description: No Content
-
   /{userId}:
     uriParameters:
       userId:
@@ -104,4 +98,9 @@ uses:
           body:
             application/json:
               type: object
-              example: !include examples/user-output-example.json
+              example: !include examples/user-output-example.json\
+    delete:
+      description: Delete an item by ID
+      responses:
+        204:
+          description: No Content
