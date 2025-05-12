@@ -67,7 +67,7 @@ output application/json
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+payload[0]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="End flow" doc:id="60edecf2-f2e2-4f6d-bc67-312f8ac8d27c" message='#["Start flow GET users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
@@ -97,7 +97,7 @@ output application/json
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-"UPDATE users SET name = '" ++ payload.firstName ++ "', lastName = '" ++ payload.lastName ++ "', address = '" ++ payload.address ++ "' WHERE id = " ++ payload.id
+"UPDATE users SET name = '" ++ payload.firstName ++ "', lastName = '" ++ payload.lastName ++ "', email = '" ++ payload.email ++ "', address = '" ++ payload.address ++ "' WHERE id = " ++ payload.id
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>

@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 				<db:sql><![CDATA[#[payload]]]></db:sql>
 			</db:select>
 		<error-handler >
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="44c50c6f-9d1c-49ba-9d01-1a79e1e4eb01" >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="44c50c6f-9d1c-49ba-9d01-1a79e1e4eb01" type="ANY">
 				<logger level="WARN" doc:name="DB Error" doc:id="3ad6f63c-50da-45ee-bd40-b3719ee8c818" message='#["DB ERROR. Trying a reconnection. . ."]'/>
 			</on-error-propagate>
 		</error-handler>
@@ -19,7 +19,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 				<db:sql><![CDATA[#[payload]]]></db:sql>
 			</db:insert>
 		<error-handler >
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="82ac9ad7-e97f-447c-a1c8-fc9a6d20dda7" >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="82ac9ad7-e97f-447c-a1c8-fc9a6d20dda7" type="ANY">
 				<logger level="WARN" doc:name="DB Error" doc:id="05e33187-7b80-4e0e-bfdd-70cc15363656" message='#["DB ERROR. Trying a reconnection. . ."]' />
 			</on-error-propagate>
 		</error-handler>
@@ -29,7 +29,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 				<db:sql><![CDATA[#[payload]]]></db:sql>
 			</db:update>
 		<error-handler >
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e0441dad-9aae-488e-9f58-8b5cf10593a5" >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e0441dad-9aae-488e-9f58-8b5cf10593a5" type="ANY">
 				<logger level="WARN" doc:name="DB Error" doc:id="05293435-a70f-434c-8557-e1c86454041a" message='#["DB ERROR. Trying a reconnection. . ."]' />
 			</on-error-propagate>
 		</error-handler>
@@ -39,7 +39,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 			<db:sql ><![CDATA[#[payload]]]></db:sql>
 		</db:delete>
 		<error-handler >
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="917982b2-61dc-4e2b-9fd9-8239934b68d6" >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="917982b2-61dc-4e2b-9fd9-8239934b68d6" type="ANY">
 				<logger level="WARN" doc:name="DB Error" doc:id="c49a9b2f-55a3-4c95-8770-dd22cb1109d8" message='#["DB ERROR. Trying a reconnection. . ."]' />
 			</on-error-propagate>
 		</error-handler>
