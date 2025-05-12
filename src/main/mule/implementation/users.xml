@@ -79,8 +79,14 @@ payload[0]]]></ee:set-payload>
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
+
+var keysPayload = keysOf(payload) joinBy ","
+var valuesPayload = (payload pluck $) joinBy ","
 ---
-"INSERT INTO users (name, lastName, email, address) VALUES ('" ++ payload.firstName ++ "', '" ++ payload.lastName ++ "', '" ++ payload.email ++ "', '" ++ payload.address ++ "')"]]></ee:set-payload>
+("INSERT INTO users (" ++
+ (keysPayload)) replace "firstName" with "name"
+ ++ ")" ++
+ " VALUES (" ++ valuesPayload ++ ")"]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<until-successful maxRetries="${untilSuccessful.maxRetries}" doc:name="Until Successful" doc:id="c2bf569c-42c7-449a-9efc-fd1066798894" >
