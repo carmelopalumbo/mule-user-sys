@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="health" doc:id="cccd637b-f28a-4c8e-83b7-c8a469d15169" >
-		<logger level="INFO" doc:name="health ok" doc:id="001be6f9-af3f-464b-a365-ddfb45e3b0e9" message='#["mule-user-sys is running properly."]'/>
+		<ee:transform doc:name="Set payload" doc:id="23fe6c4b-26e9-4af2-85e2-7f6bfa8b78cf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "mule-user-sys is running properly."
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Payload log" doc:id="001be6f9-af3f-464b-a365-ddfb45e3b0e9" message='#["mule-user-sys is running properly."]'/>
 	</sub-flow>
 </mule>
