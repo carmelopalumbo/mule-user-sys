@@ -91,7 +91,7 @@ output application/json
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-"UPDATE users SET name = '" ++ payload.firstName ++ "', lastName = '" ++ payload.lastName ++ "', address = '" ++ payload.address ++ "' WHERE email = '" ++ payload.email ++ "'"
+"UPDATE users SET name = '" ++ payload.firstName ++ "', lastName = '" ++ payload.lastName ++ "', address = '" ++ payload.address ++ "' WHERE id = " ++ payload.id
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -100,7 +100,24 @@ output application/json
 		<logger level="INFO" doc:name="End flow" doc:id="97c7ae2f-54fb-4d20-800e-e1f138c421a7" message='#["Start flow PUT users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="patch-users" doc:id="f6e81dca-30a4-452f-bb85-6fabafb8641f" >
-		<logger level="INFO" doc:name="Logger" doc:id="f669e289-6cf9-40cc-997d-5b8765cdfc5b" message="test" />
+		<logger level="INFO" doc:name="Start flow" doc:id="3e7c6f1d-e54e-4c84-91a1-9a282fe4e8f4" message='#["Start flow PATCH users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
+		<logger level="DEBUG" doc:name="Debug payload before UPDATE" doc:id="73275059-4395-4ba7-be94-9b27c68429e8" message='#["Debug payload before UPDATE: " ++ payload.^raw]' />
+		<ee:transform doc:name="Set DB query" doc:id="1c427155-c503-4586-9920-00df888ed095">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+
+var queryPayload = (payload - "id") pluck ((value, key) -> key ++ "='" ++ value ++ "'") 
+---
+("UPDATE users SET " ++
+ (queryPayload joinBy ",")) replace "firstName" with "name"
+ ++
+ " WHERE id=" ++ payload.id ++ ""]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="db-orchestrator-update" doc:id="dd4a7df4-cc3a-45e4-b893-b8028ef526aa" name="db-orchestrator-update" />
+		<logger level="INFO" doc:name="UPDATE ok" doc:id="dbe02ad0-2ff2-4782-a291-e976473297a1" message='#["User successfully updated."]' />
+		<logger level="INFO" doc:name="End flow" doc:id="74dd7b63-50b0-4fb8-b884-f2f8c43c0407" message='#["Start flow PATCH users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="delete-users" doc:id="d2c4cb1b-6b78-4269-af46-ce398f3b0440" >
 		<logger level="INFO" doc:name="Logger" doc:id="3e8d8c40-be66-47d4-b039-361548be78df" message="test" />

@@ -21,6 +21,9 @@ types:
   putUser:
     type: object
     properties:
+      id:
+        type: number
+        required: true
       firstName:
         type: string
         required: true
@@ -37,6 +40,9 @@ types:
   patchUser:
     type: object
     properties:
+      id:
+        type: number
+        required: true
       firstName:
         type: string
         required: false
