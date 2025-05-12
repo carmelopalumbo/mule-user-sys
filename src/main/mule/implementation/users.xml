@@ -70,7 +70,7 @@ payload]]></ee:set-payload>
 	</sub-flow>
 	<sub-flow name="post-users" doc:id="16055850-be66-4e82-b858-b6e5b5ee15b7" >
 		<logger level="INFO" doc:name="Start flow" doc:id="dba8408e-f82c-476f-9c36-8710222644b0" message='#["Start flow POST users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
-		<logger level="DEBUG" doc:name="Debug payload before SELECT" doc:id="6ff43967-2618-4e53-87ac-fa38cf6db2ce" message='#["Debug payload before SELECT: " ++ payload.^raw]'/>
+		<logger level="DEBUG" doc:name="Debug payload before INSERT" doc:id="6ff43967-2618-4e53-87ac-fa38cf6db2ce" message='#["Debug payload before INSERT: " ++ payload.^raw]'/>
 		<ee:transform doc:name="Set DB query" doc:id="0553d50c-939e-4b2e-a9dc-537937c8b6fe" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -80,11 +80,24 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="db-orchestrator-insert" doc:id="f0ab8b7b-d3fb-40c7-94be-898709227bf7" name="db-orchestrator-insert" />
-		<logger level="INFO" doc:name="INSERT ok" doc:id="6cc25b2b-1e39-492c-b2da-25b976544a9e" message='#["New user OK"]'/>
+		<logger level="INFO" doc:name="INSERT ok" doc:id="6cc25b2b-1e39-492c-b2da-25b976544a9e" message='#["New user OK."]'/>
 		<logger level="INFO" doc:name="End flow" doc:id="207a01a3-0501-447f-8206-e114f618c4be" message='#["Start flow POST users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="put-users" doc:id="a085e5e6-8f8d-4f09-bbcd-9410dbe16604" >
-		<logger level="INFO" doc:name="Logger" doc:id="41184d2c-74f8-46cc-989a-23ae333c0320" message="test" />
+		<logger level="INFO" doc:name="Start flow" doc:id="e9c4d691-f776-435e-ad0b-d08a5fd15bc4" message='#["Start flow PUT users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
+		<logger level="DEBUG" doc:name="Debug payload before UPDATE" doc:id="b72ecce0-d77c-4bd2-88a3-2d1ab5ff3fda" message='#["Debug payload before UPDATE: " ++ payload.^raw]' />
+		<ee:transform doc:name="Set DB query" doc:id="87dfbf75-4d3e-4009-b300-ce8305c19dcb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"UPDATE users SET name = '" ++ payload.firstName ++ "', lastName = '" ++ payload.lastName ++ "', address = '" ++ payload.address ++ "' WHERE email = '" ++ payload.email ++ "'"
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="db-orchestrator-update" doc:id="c5fdc449-eea1-44ac-90bb-2cf478cdbd92" name="db-orchestrator-update" />
+		<logger level="INFO" doc:name="UPDATE ok" doc:id="b166493b-a540-4fe2-a4db-1bc8c13a7cc6" message='#["User successfully updated."]' />
+		<logger level="INFO" doc:name="End flow" doc:id="97c7ae2f-54fb-4d20-800e-e1f138c421a7" message='#["Start flow PUT users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="patch-users" doc:id="f6e81dca-30a4-452f-bb85-6fabafb8641f" >
 		<logger level="INFO" doc:name="Logger" doc:id="f669e289-6cf9-40cc-997d-5b8765cdfc5b" message="test" />

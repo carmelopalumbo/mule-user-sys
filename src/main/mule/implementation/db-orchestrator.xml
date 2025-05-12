@@ -18,4 +18,11 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 			</db:insert>
 		</until-successful>
 	</flow>
+	<flow name="db-orchestrator-update" doc:id="5591ca4f-8f8c-4bbd-b3ab-ca314eb41b78" >
+		<until-successful maxRetries="${untilSuccessful.maxRetries}" doc:name="Until Successful" doc:id="29a275e2-b53e-418c-b96f-8296f562a99f" >
+			<db:update doc:name="Update" doc:id="dcdb14c0-3f3d-486d-b0f5-fb82ead03358" config-ref="Database_Config" >
+				<db:sql ><![CDATA[#[payload]]]></db:sql>
+			</db:update>
+		</until-successful>
+	</flow>
 </mule>
