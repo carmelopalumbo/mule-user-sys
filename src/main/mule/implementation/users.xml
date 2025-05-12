@@ -48,9 +48,7 @@ output application/json
 attributes.uriParams.userId as String default null]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<choice doc:name="Choice" doc:id="c839d100-9d74-4ce4-98bd-2cca9a2d7c46" >
-			<when expression="#[!isEmpty(vars.userId)]">
-				<ee:transform doc:name="Set DB query" doc:id="99e2e202-3d07-49fd-a0aa-c0309e3bd25e">
+		<ee:transform doc:name="Set DB query" doc:id="99e2e202-3d07-49fd-a0aa-c0309e3bd25e">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -59,8 +57,8 @@ output application/json
 			</ee:message>
 			<ee:variables />
 		</ee:transform>
-				<flow-ref doc:name="db-orchestrator-select" doc:id="32f344db-fc9d-42ac-a9b7-43c7f2a2610b" name="db-orchestrator-select" />
-				<ee:transform doc:name="Payload to JSON" doc:id="1130b8b1-b2b9-4a1f-b24b-3b81c919d9fe">
+		<flow-ref doc:name="db-orchestrator-select" doc:id="32f344db-fc9d-42ac-a9b7-43c7f2a2610b" name="db-orchestrator-select" />
+		<ee:transform doc:name="Payload to JSON" doc:id="1130b8b1-b2b9-4a1f-b24b-3b81c919d9fe">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -68,19 +66,6 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-			</when>
-			<otherwise >
-				<ee:transform doc:name="Set empty payload" doc:id="155524de-8645-478c-bdd0-32d728371491">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-[]]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
-				<logger level="INFO" doc:name="userId is empty" doc:id="87b6daf0-6c12-4a84-a5c7-ac20500913fb" message='#["userId is empty. The flow will be stopped. . ."]'/>
-			</otherwise>
-		</choice>
 		<logger level="INFO" doc:name="End flow" doc:id="60edecf2-f2e2-4f6d-bc67-312f8ac8d27c" message='#["Start flow GET users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="post-users" doc:id="16055850-be66-4e82-b858-b6e5b5ee15b7" >
