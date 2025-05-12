@@ -15,6 +15,6 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Payload log" doc:id="001be6f9-af3f-464b-a365-ddfb45e3b0e9" message='#["mule-user-sys is running properly."]'/>
+		<logger level="INFO" doc:name="Payload log" doc:id="001be6f9-af3f-464b-a365-ddfb45e3b0e9" message='#[payload]'/>
 	</sub-flow>
 </mule>
