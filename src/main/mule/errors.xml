@@ -13,9 +13,9 @@ output application/json
 ---
 {
 	"title": "APIKIT:BAD_REQUEST",
-	"errorType": error..errorType[0] default "N/A",
+	"errorType": error..identifier[0] default "N/A",
 	"errorDescription": error..description[0] default "N/A",
-	"timestamp": vars.startTimesamp default "N/A"
+	"timestamp": vars.startTimestamp default "N/A"
 }]]></ee:set-payload>
 				</ee:message>
 				<ee:variables >
@@ -32,9 +32,9 @@ output application/json
 ---
 {
 	"title": "APIKIT:NOT_FOUND",
-	"errorType": error..errorType[0] default "N/A",
+	"errorType": error..identifier[0] default "N/A",
 	"errorDescription": error..description[0] default "N/A",
-	"timestamp": vars.startTimesamp default "N/A"
+	"timestamp": vars.startTimestamp default "N/A"
 }]]></ee:set-payload>
 				</ee:message>
 				<ee:variables >
@@ -51,9 +51,9 @@ output application/json
 ---
 {
 	"title": "APIKIT:METHOD_NOT_ALLOWED",
-	"errorType": error..errorType[0] default "N/A",
+	"errorType": error..identifier[0] default "N/A",
 	"errorDescription": error..description[0] default "N/A",
-	"timestamp": vars.startTimesamp default "N/A"
+	"timestamp": vars.startTimestamp default "N/A"
 }]]></ee:set-payload>
 				</ee:message>
 				<ee:variables >
@@ -70,9 +70,9 @@ output application/json
 ---
 {
 	"title": "APIKIT:NOT_ACCEPTABLE",
-	"errorType": error..errorType[0] default "N/A",
+	"errorType": error..identifier[0] default "N/A",
 	"errorDescription": error..description[0] default "N/A",
-	"timestamp": vars.startTimesamp default "N/A"
+	"timestamp": vars.startTimestamp default "N/A"
 }]]></ee:set-payload>
 				</ee:message>
 				<ee:variables >
@@ -89,9 +89,9 @@ output application/json
 ---
 {
 	"title": "APIKIT:UNSUPPORTED_MEDIA_TYPE",
-	"errorType": error..errorType[0] default "N/A",
+	"errorType": error..identifier[0] default "N/A",
 	"errorDescription": error..description[0] default "N/A",
-	"timestamp": vars.startTimesamp default "N/A"
+	"timestamp": vars.startTimestamp default "N/A"
 }]]></ee:set-payload>
 				</ee:message>
 				<ee:variables >
@@ -108,9 +108,9 @@ output application/json
 ---
 {
 	"title": "APIKIT:NOT_IMPLEMENTED",
-	"errorType": error..errorType[0] default "N/A",
+	"errorType": error..identifier[0] default "N/A",
 	"errorDescription": error..description[0] default "N/A",
-	"timestamp": vars.startTimesamp default "N/A"
+	"timestamp": vars.startTimestamp default "N/A"
 }]]></ee:set-payload>
 				</ee:message>
 				<ee:variables >
@@ -127,9 +127,9 @@ output application/json
 ---
 {
 	"title": "ANY",
-	"errorType": error..errorType[0] default "N/A",
+	"errorType": error..identifier[0] default "N/A",
 	"errorDescription": error..description[0] default "N/A",
-	"timestamp": vars.startTimesamp default "N/A"
+	"timestamp": vars.startTimestamp default "N/A"
 }]]></ee:set-payload>
 				</ee:message>
 				<ee:variables >
