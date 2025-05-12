@@ -69,7 +69,19 @@ payload]]></ee:set-payload>
 		<logger level="INFO" doc:name="End flow" doc:id="60edecf2-f2e2-4f6d-bc67-312f8ac8d27c" message='#["Start flow GET users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="post-users" doc:id="16055850-be66-4e82-b858-b6e5b5ee15b7" >
-		<logger level="INFO" doc:name="Logger" doc:id="0b9303ba-a664-4689-9f91-4430a9696d69" message="test" />
+		<logger level="INFO" doc:name="Start flow" doc:id="dba8408e-f82c-476f-9c36-8710222644b0" message='#["Start flow POST users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
+		<logger level="DEBUG" doc:name="Debug payload before SELECT" doc:id="6ff43967-2618-4e53-87ac-fa38cf6db2ce" message='#["Debug payload before SELECT: " ++ payload.^raw]'/>
+		<ee:transform doc:name="Set DB query" doc:id="0553d50c-939e-4b2e-a9dc-537937c8b6fe" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"INSERT INTO users (name, lastName, email, address) VALUES ('" ++ payload.firstName ++ "', '" ++ payload.lastName ++ "', '" ++ payload.email ++ "', '" ++ payload.address ++ "')"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="db-orchestrator-insert" doc:id="f0ab8b7b-d3fb-40c7-94be-898709227bf7" name="db-orchestrator-insert" />
+		<logger level="INFO" doc:name="INSERT ok" doc:id="6cc25b2b-1e39-492c-b2da-25b976544a9e" message='#["New user OK"]'/>
+		<logger level="INFO" doc:name="End flow" doc:id="207a01a3-0501-447f-8206-e114f618c4be" message='#["Start flow POST users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="put-users" doc:id="a085e5e6-8f8d-4f09-bbcd-9410dbe16604" >
 		<logger level="INFO" doc:name="Logger" doc:id="41184d2c-74f8-46cc-989a-23ae333c0320" message="test" />

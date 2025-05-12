@@ -11,4 +11,11 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 			</db:select>
 		</until-successful>
 	</flow>
+	<flow name="db-orchestrator-insert" doc:id="de8676ab-f65b-4eb4-bbbe-59015c2f1246" >
+		<until-successful maxRetries="${untilSuccessful.maxRetries}" doc:name="Until Successful" doc:id="33812b51-efe3-4fac-ac30-1cd0160145ee" >
+			<db:insert doc:name="Insert" doc:id="dc7d6420-ca13-4d78-bf59-9cc8cb262664" config-ref="Database_Config">
+				<db:sql ><![CDATA[#[payload]]]></db:sql>
+			</db:insert>
+		</until-successful>
+	</flow>
 </mule>
