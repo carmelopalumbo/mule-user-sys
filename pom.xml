@@ -8,6 +8,8 @@
 	<packaging>mule-application</packaging>
 
 	<name>mule-user-sys</name>
+	<description>System API for user data access. Handles direct interaction with the database, performing queries and CRUD operations on user entities.</description>
+	
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
