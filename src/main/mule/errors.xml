@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<error-handler name="apikit-error-handler" doc:id="c5528f99-f1cd-484e-8236-ebc63a54e8d8" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="6859120b-46c6-4186-b5cb-5ab30b618827" type="APIKIT:BAD_REQUEST">
+			<ee:transform doc:name="Set error message" doc:id="3ecd46a3-9c55-4f95-920b-7b8d34721326" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"title": "APIKIT:BAD_REQUEST",
+	"errorType": error..identifier[0] default "N/A",
+	"errorDescription": error..description[0] default "N/A",
+	"timestamp": vars.startTimestamp default "N/A"
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Error message" doc:id="54dfc152-c34c-40fb-a8ee-1cbe5a86dcbb" message="#[payload]"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b9d12b7d-6ac3-4fe7-a1af-867078da8bc5" type="APIKIT:NOT_FOUND">
+			<ee:transform doc:name="Set error message" doc:id="0c2e82cc-1bcb-475b-a9a8-f16c745eac84" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"title": "APIKIT:NOT_FOUND",
+	"errorType": error..identifier[0] default "N/A",
+	"errorDescription": error..description[0] default "N/A",
+	"timestamp": vars.startTimestamp default "N/A"
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Error message" doc:id="91b7a878-adc5-4785-a2bf-12f28dde2239" message="#[payload]" />
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="94ea0ead-770d-4ea6-9c1d-98a90cccb09f" type="APIKIT:METHOD_NOT_ALLOWED">
+			<ee:transform doc:name="Set error message" doc:id="34fcde2e-d317-4bdd-b7ca-cc8bf6fb1437" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"title": "APIKIT:METHOD_NOT_ALLOWED",
+	"errorType": error..identifier[0] default "N/A",
+	"errorDescription": error..description[0] default "N/A",
+	"timestamp": vars.startTimestamp default "N/A"
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Error message" doc:id="289c70a7-2043-4bea-a6e5-43c62d1d3fe3" message="#[payload]" />
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="093c32ee-bd85-4dba-b59b-5cd16ac942ae" type="APIKIT:NOT_ACCEPTABLE">
+			<ee:transform doc:name="Set error message" doc:id="e6e44bd6-2792-4250-b8ee-967c03cc62fd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"title": "APIKIT:NOT_ACCEPTABLE",
+	"errorType": error..identifier[0] default "N/A",
+	"errorDescription": error..description[0] default "N/A",
+	"timestamp": vars.startTimestamp default "N/A"
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Error message" doc:id="f90e01f8-a4a7-4683-951b-28521fbace22" message="#[payload]" />
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3b775fba-1845-4ea1-8e71-5c83283b6b86" type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<ee:transform doc:name="Set error message" doc:id="80907ac7-0294-450b-99af-4d6f263cff22" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"title": "APIKIT:UNSUPPORTED_MEDIA_TYPE",
+	"errorType": error..identifier[0] default "N/A",
+	"errorDescription": error..description[0] default "N/A",
+	"timestamp": vars.startTimestamp default "N/A"
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Error message" doc:id="1a2950e6-6d79-4cb9-9f6d-99e1729a62c5" message="#[payload]" />
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="61676686-c93b-4eb9-acad-209368221ea8" type="APIKIT:NOT_IMPLEMENTED">
+			<ee:transform doc:name="Set error message" doc:id="7eed9d71-af13-4882-b0a9-06c93e69d5c9" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"title": "APIKIT:NOT_IMPLEMENTED",
+	"errorType": error..identifier[0] default "N/A",
+	"errorDescription": error..description[0] default "N/A",
+	"timestamp": vars.startTimestamp default "N/A"
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Error message" doc:id="ddb503fa-4d1e-4338-806e-eb102ba3667d" message="#[payload]" />
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="afedf15c-2538-4a71-a79d-8ce6abc851a2" type="ANY">
+			<ee:transform doc:name="Set error message" doc:id="e3fd9cfc-d4a1-42d2-a168-bea214e69269" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"title": "ANY",
+	"errorType": error..identifier[0] default "N/A",
+	"errorDescription": error..description[0] default "N/A",
+	"timestamp": vars.startTimestamp default "N/A"
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Error message" doc:id="2c05090f-e748-47f3-b19c-8fd2e0e3de50" message="#[payload]" />
+		</on-error-propagate>
+	</error-handler>
+</mule>

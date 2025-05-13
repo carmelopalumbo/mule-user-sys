@@ -1,0 +1,57 @@
+#%RAML 1.0 Library
+
+types:
+
+  newUser:
+    type: object
+    properties:
+      firstName:
+        type: string
+        required: false
+      lastName:
+        type: string
+        required: false
+      email:
+        type: string
+        required: false
+      address:
+        type: string
+        required: false
+  
+  putUser:
+    type: object
+    properties:
+      id:
+        type: number
+        required: true
+      firstName:
+        type: string
+        required: false
+      lastName:
+        type: string
+        required: false
+      email:
+        type: string
+        required: false
+      address:
+        type: string
+        required: false
+  
+  patchUser:
+    type: object
+    properties:
+      id:
+        type: number
+        required: true
+      firstName:
+        type: string
+        required: false
+      lastName:
+        type: string
+        required: false
+      email:
+        type: string
+        required: false
+      address:
+        type: string
+        required: false

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="db-orchestrator-select" doc:id="3a308e1b-e14f-43e6-bac3-1d2d40dfa0ec" >
+		<db:select doc:name="Select" doc:id="22d2efdb-3cd3-4ffb-8cec-82fdf1e99028" config-ref="Database_Config">
+				<db:sql><![CDATA[#[payload]]]></db:sql>
+			</db:select>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="44c50c6f-9d1c-49ba-9d01-1a79e1e4eb01" type="ANY">
+				<logger level="WARN" doc:name="DB Error" doc:id="3ad6f63c-50da-45ee-bd40-b3719ee8c818" message='#["DB ERROR. Trying a reconnection. . ."]'/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="db-orchestrator-insert" doc:id="de8676ab-f65b-4eb4-bbbe-59015c2f1246" >
+		<db:insert doc:name="Insert" doc:id="dc7d6420-ca13-4d78-bf59-9cc8cb262664" config-ref="Database_Config">
+				<db:sql><![CDATA[#[payload]]]></db:sql>
+			</db:insert>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="82ac9ad7-e97f-447c-a1c8-fc9a6d20dda7" type="ANY">
+				<logger level="WARN" doc:name="DB Error" doc:id="05e33187-7b80-4e0e-bfdd-70cc15363656" message='#["DB ERROR. Trying a reconnection. . ."]' />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="db-orchestrator-update" doc:id="5591ca4f-8f8c-4bbd-b3ab-ca314eb41b78" >
+		<db:update doc:name="Update" doc:id="dcdb14c0-3f3d-486d-b0f5-fb82ead03358" config-ref="Database_Config">
+				<db:sql><![CDATA[#[payload]]]></db:sql>
+			</db:update>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e0441dad-9aae-488e-9f58-8b5cf10593a5" type="ANY">
+				<logger level="WARN" doc:name="DB Error" doc:id="05293435-a70f-434c-8557-e1c86454041a" message='#["DB ERROR. Trying a reconnection. . ."]' />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="db-orchestrator-delete" doc:id="87201fe0-23c8-4527-b8b7-52a8253f765f" >
+		<db:delete doc:name="Delete" doc:id="14650fe2-43cd-42b7-bc12-0e5dd19ab3a4" config-ref="Database_Config">
+			<db:sql ><![CDATA[#[payload]]]></db:sql>
+		</db:delete>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="917982b2-61dc-4e2b-9fd9-8239934b68d6" type="ANY">
+				<logger level="WARN" doc:name="DB Error" doc:id="c49a9b2f-55a3-4c95-8770-dd22cb1109d8" message='#["DB ERROR. Trying a reconnection. . ."]' />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>

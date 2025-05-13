@@ -1,6 +1,6 @@
 #%RAML 1.0
 title: mule-user-sys
-description: "TBD"
+description: "System API for user data access. Handles direct interaction with the database, performing queries and CRUD operations on user entities."
 version: v1
 mediaType: application/json
 
@@ -9,6 +9,9 @@ protocols:
 
 baseUri: http://localhost:8082/api
 
+uses:
+  user: types/users-input.raml
+  
 /health:
    get:
     description: Check the health of API
@@ -18,8 +21,8 @@ baseUri: http://localhost:8082/api
           application/json:
             type: object
             example: {
-              "message": "successful"
-            }
+                    "message": "mule-user-sys is running properly."
+                   }
 
 /users:
   get:
@@ -38,15 +41,13 @@ baseUri: http://localhost:8082/api
         body:
           application/json:
             type: object
-            example: {
-              "message": "successful"
-            }
-
+            example: !include examples/user-output-example.json
+            
   post:
     description: Create a new user
     body:
       application/json:
-        type: object
+        type: user.newUser
     responses:
       201:
         body:
@@ -60,7 +61,7 @@ baseUri: http://localhost:8082/api
     description: Update an existing user by ID
     body:
       application/json:
-        type: object
+        type: user.putUser
     responses:
       200:
         body:
@@ -74,7 +75,7 @@ baseUri: http://localhost:8082/api
     description: Partially update fields of an existing item by ID
     body:
       application/json:
-        type: object
+        type: user.patchUser
     responses:
       200:
         body:
@@ -84,16 +85,10 @@ baseUri: http://localhost:8082/api
             "message": "successful"
           }
 
-  delete:
-    description: Delete an item by ID
-    responses:
-      204:
-        description: No Content
-
   /{userId}:
     uriParameters:
       userId:
-        type: string  # <-- usare string se non hai un tipo definito custom
+        type: string
         description: Unique ID of the user
 
     get:
@@ -103,6 +98,9 @@ baseUri: http://localhost:8082/api
           body:
             application/json:
               type: object
-              example: {
-              "message": "successful"
-            }
+              example: !include examples/user-output-example.json\
+    delete:
+      description: Delete an item by ID
+      responses:
+        204:
+          description: No Content
