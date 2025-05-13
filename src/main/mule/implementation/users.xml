@@ -62,7 +62,9 @@ output application/json
 		<until-successful maxRetries="${untilSuccessful.maxRetries}" doc:name="Until Successful" doc:id="8297d7e9-266d-4d50-bd35-415012ad7e55" >
 			<flow-ref doc:name="db-orchestrator-select" doc:id="32f344db-fc9d-42ac-a9b7-43c7f2a2610b" name="db-orchestrator-select" />
 		</until-successful>
-		<ee:transform doc:name="Payload to JSON" doc:id="1130b8b1-b2b9-4a1f-b24b-3b81c919d9fe">
+		<choice doc:name="Check payload" doc:id="2ea9616d-2c7e-49af-a4a9-f74980e69f3c" >
+			<when expression="#[not isEmpty(payload)]">
+				<ee:transform doc:name="Payload to JSON" doc:id="1130b8b1-b2b9-4a1f-b24b-3b81c919d9fe">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -70,7 +72,21 @@ output application/json
 payload[0]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="End flow" doc:id="60edecf2-f2e2-4f6d-bc67-312f8ac8d27c" message='#["Start flow GET users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
+			</when>
+			<otherwise >
+				<ee:transform doc:name="User not found" doc:id="aad94e6c-4d68-4f60-8b78-211d2e47583d" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "User not found."
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="End flow" doc:id="60edecf2-f2e2-4f6d-bc67-312f8ac8d27c" message='#["End flow GET users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="post-users" doc:id="16055850-be66-4e82-b858-b6e5b5ee15b7" >
 		<logger level="INFO" doc:name="Start flow" doc:id="dba8408e-f82c-476f-9c36-8710222644b0" message='#["Start flow POST users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
@@ -93,7 +109,7 @@ var valuesPayload = (payload pluck $) map ("'" ++ $ ++ "'") joinBy ","
 			<flow-ref doc:name="db-orchestrator-insert" doc:id="f0ab8b7b-d3fb-40c7-94be-898709227bf7" name="db-orchestrator-insert" />
 		</until-successful>
 		<logger level="INFO" doc:name="INSERT ok" doc:id="6cc25b2b-1e39-492c-b2da-25b976544a9e" message='#["New user OK."]'/>
-		<logger level="INFO" doc:name="End flow" doc:id="207a01a3-0501-447f-8206-e114f618c4be" message='#["Start flow POST users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
+		<logger level="INFO" doc:name="End flow" doc:id="207a01a3-0501-447f-8206-e114f618c4be" message='#["End flow POST users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="put-users" doc:id="a085e5e6-8f8d-4f09-bbcd-9410dbe16604" >
 		<logger level="INFO" doc:name="Start flow" doc:id="e9c4d691-f776-435e-ad0b-d08a5fd15bc4" message='#["Start flow PUT users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
@@ -157,6 +173,16 @@ var queryPayload = (vars.sourcePayload - "id") pluck ((value, key) -> key ++ "='
 				<until-successful maxRetries="${untilSuccessful.maxRetries}" doc:name="Until Successful" doc:id="d52aaa06-492b-4711-a210-9ec9873d446b">
 			<flow-ref doc:name="db-orchestrator-update" doc:id="c5fdc449-eea1-44ac-90bb-2cf478cdbd92" name="db-orchestrator-update" />
 		</until-successful>
+				<ee:transform doc:name="Set message" doc:id="6ef0901e-1861-44f2-b3a2-ef2f6e1e5de5">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "User successfully updated."
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 				<logger level="INFO" doc:name="UPDATE ok" doc:id="b166493b-a540-4fe2-a4db-1bc8c13a7cc6" message='#["User successfully updated."]' />
 			</when>
 			<otherwise >
@@ -173,7 +199,7 @@ output application/json
 				<logger level="WARN" doc:name="Missing items" doc:id="a9e25a4d-2b93-4b55-aed7-760a2454dc0a" message='#[payload]'/>
 			</otherwise>
 		</choice>
-		<logger level="INFO" doc:name="End flow" doc:id="97c7ae2f-54fb-4d20-800e-e1f138c421a7" message='#["Start flow PUT users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
+		<logger level="INFO" doc:name="End flow" doc:id="97c7ae2f-54fb-4d20-800e-e1f138c421a7" message='#["End flow PUT users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="patch-users" doc:id="f6e81dca-30a4-452f-bb85-6fabafb8641f" >
 		<logger level="INFO" doc:name="Start flow" doc:id="3e7c6f1d-e54e-4c84-91a1-9a282fe4e8f4" message='#["Start flow PATCH users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
@@ -194,8 +220,35 @@ var queryPayload = (payload - "id") pluck ((value, key) -> key ++ "='" ++ value 
 		<until-successful maxRetries="${untilSuccessful.maxRetries}" doc:name="Until Successful" doc:id="b1ac5882-57a7-415a-b759-f33b899f635b" >
 			<flow-ref doc:name="db-orchestrator-update" doc:id="dd4a7df4-cc3a-45e4-b893-b8028ef526aa" name="db-orchestrator-update" />
 		</until-successful>
-		<logger level="INFO" doc:name="UPDATE ok" doc:id="dbe02ad0-2ff2-4782-a291-e976473297a1" message='#["User successfully updated."]' />
-		<logger level="INFO" doc:name="End flow" doc:id="74dd7b63-50b0-4fb8-b884-f2f8c43c0407" message='#["Start flow PATCH users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
+		<choice doc:name="Check PATCH" doc:id="20c4e889-b2a8-49b2-896e-ebd05c1a759f" >
+			<when expression="#[payload.affectedRows &gt;= 1]">
+				<ee:transform doc:name="Set message" doc:id="0e6fb996-e70a-4b29-9fad-0a377498acb5">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "User successfully updated."
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<logger level="INFO" doc:name="UPDATE ok" doc:id="dbe02ad0-2ff2-4782-a291-e976473297a1" message="#[payload]" />
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Set message" doc:id="2ade503a-f0b7-4073-b4b3-9370c8e61e64" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "No update needed."
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Not updated" doc:id="a052873c-e189-4931-aaf7-ad2ff791db48" message="#[payload]" />
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="End flow" doc:id="74dd7b63-50b0-4fb8-b884-f2f8c43c0407" message='#["End flow PATCH users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="delete-users" doc:id="d2c4cb1b-6b78-4269-af46-ce398f3b0440" >
 		<logger level="INFO" doc:name="Start flow" doc:id="7f4e235a-18a0-4139-85e3-391097ce0b70" message='#["Start flow DELETE users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
@@ -222,24 +275,34 @@ output application/json
 		</until-successful>
 		<choice doc:name="Check DELETE" doc:id="11746baa-7e7e-4ac0-85df-34654e6d1ddf" >
 			<when expression="#[payload == 1]">
-				<ee:transform doc:name="Set httpStatus 204" doc:id="9082b540-8a28-4514-bc4f-0374fe170ba6">
+				<ee:transform doc:name="Set message" doc:id="9082b540-8a28-4514-bc4f-0374fe170ba6">
 					<ee:message>
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "User with ID: " ++ attributes.uriParams.userId ++ " has been deleted successfully."
+}]]></ee:set-payload>
 					</ee:message>
 					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[204]]></ee:set-variable>
 					</ee:variables>
 				</ee:transform>
-				<logger level="INFO" doc:name="DELETE ok" doc:id="67e04726-68b4-4c5b-bcc0-48972a67c453" message='#["User successfully deleted."]' />
+				<logger level="INFO" doc:name="DELETE ok" doc:id="67e04726-68b4-4c5b-bcc0-48972a67c453" message='#[payload]' />
 			</when>
 			<otherwise >
-				<ee:transform doc:name="Set httpStatus 404" doc:id="8399dd08-5566-42c2-a007-3b3024bffb1c" >
+				<ee:transform doc:name="Set message" doc:id="8399dd08-5566-42c2-a007-3b3024bffb1c" >
 					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "User not found."
+}]]></ee:set-payload>
 					</ee:message>
 					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
 					</ee:variables>
 				</ee:transform>
-				<logger level="ERROR" doc:name="User not found" doc:id="73f94b5b-6a01-4792-970f-66bf2f3c7d5f" message='#["USER not found. ID: " ++ vars.userId]' />
+				<logger level="ERROR" doc:name="User not found" doc:id="73f94b5b-6a01-4792-970f-66bf2f3c7d5f" message='#[payload]' />
 			</otherwise>
 		</choice>
 		<logger level="INFO" doc:name="End flow" doc:id="1cb6c453-b8e2-443d-a82f-658d86ae3004" message='#["Start flow DELETE users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />

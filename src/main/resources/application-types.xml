@@ -1262,4 +1262,6 @@ type auto_87201fe0_23c8_4527_b8b7_52a8253f765f_Output_Variables_userId = String 
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
+  <types:enrichment select="#8399dd08-5566-42c2-a007-3b3024bffb1c"/>
+  <types:enrichment select="#9082b540-8a28-4514-bc4f-0374fe170ba6"/>
 </types:mule>
