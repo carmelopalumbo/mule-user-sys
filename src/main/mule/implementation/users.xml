@@ -97,20 +97,82 @@ var valuesPayload = (payload pluck $) map ("'" ++ $ ++ "'") joinBy ","
 	</sub-flow>
 	<sub-flow name="put-users" doc:id="a085e5e6-8f8d-4f09-bbcd-9410dbe16604" >
 		<logger level="INFO" doc:name="Start flow" doc:id="e9c4d691-f776-435e-ad0b-d08a5fd15bc4" message='#["Start flow PUT users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
-		<logger level="DEBUG" doc:name="Debug payload before UPDATE" doc:id="b72ecce0-d77c-4bd2-88a3-2d1ab5ff3fda" message='#["Debug payload before UPDATE: " ++ payload.^raw]' />
-		<ee:transform doc:name="Set DB query" doc:id="87dfbf75-4d3e-4009-b300-ce8305c19dcb" >
+		<ee:transform doc:name="Set sourcePayload" doc:id="1da26731-d934-41d5-b834-d0f8a1b4bb40" >
 			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="sourcePayload" ><![CDATA[%dw 2.0
 output application/json
 ---
-"UPDATE users SET name = '" ++ payload.firstName ++ "', lastName = '" ++ payload.lastName ++ "', email = '" ++ payload.email ++ "', address = '" ++ payload.address ++ "' WHERE id = " ++ payload.id
-]]></ee:set-payload>
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Debug payload before UPDATE" doc:id="b72ecce0-d77c-4bd2-88a3-2d1ab5ff3fda" message='#["Debug payload before UPDATE: " ++ payload.^raw]' />
+		<ee:transform doc:name="Set DB query" doc:id="5bee5c3d-dce0-4ca7-9318-f08290ba593e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+"SELECT * FROM users_db.users WHERE id=" ++ vars.sourcePayload.id]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<until-successful maxRetries="${untilSuccessful.maxRetries}" doc:name="Until Successful" doc:id="d52aaa06-492b-4711-a210-9ec9873d446b" >
+		<until-successful maxRetries="${untilSuccessful.maxRetries}" doc:name="Until Successful" doc:id="1c01181e-3285-4646-9951-fedbba2b4e68">
+			<flow-ref doc:name="db-orchestrator-select" doc:id="627a9b6d-d058-4fea-b108-3ea2231c3c4c" name="db-orchestrator-select" />
+		</until-successful>
+		<ee:transform doc:name="Payload to JSON" doc:id="38e3f0c5-a975-40c9-b2ec-5193dd97c8ef">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload[0]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Set dbCheck" doc:id="4de9a2d0-a558-4ff2-a87b-eca6888f4202" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="dbCheck" ><![CDATA[%dw 2.0
+output application/json
+
+var dbResult = keysOf(payload) map if(($ as String) == "name") "firstName" else ($ as String)
+---
+isEmpty(dbResult -- keysOf(vars.sourcePayload))]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Check keys" doc:id="23565711-ddef-4f59-9b14-6a8cacf5e42f" >
+			<when expression="#[vars.dbCheck]">
+				<ee:transform doc:name="Set DB query" doc:id="521d4b44-aae4-4eaa-9eb3-c71629339f5b">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+
+var queryPayload = (vars.sourcePayload - "id") pluck ((value, key) -> key ++ "='" ++ value ++ "'") 
+---
+("UPDATE users SET " ++
+ (queryPayload joinBy ",")) replace "firstName" with "name"
+ ++
+ " WHERE id=" ++ vars.sourcePayload.id ++ ""]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<until-successful maxRetries="${untilSuccessful.maxRetries}" doc:name="Until Successful" doc:id="d52aaa06-492b-4711-a210-9ec9873d446b">
 			<flow-ref doc:name="db-orchestrator-update" doc:id="c5fdc449-eea1-44ac-90bb-2cf478cdbd92" name="db-orchestrator-update" />
 		</until-successful>
-		<logger level="INFO" doc:name="UPDATE ok" doc:id="b166493b-a540-4fe2-a4db-1bc8c13a7cc6" message='#["User successfully updated."]' />
+				<logger level="INFO" doc:name="UPDATE ok" doc:id="b166493b-a540-4fe2-a4db-1bc8c13a7cc6" message='#["User successfully updated."]' />
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Set message" doc:id="37b3ed52-8671-4946-9182-608620ba60d5">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "Not all the required information are passed."
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="WARN" doc:name="Missing items" doc:id="a9e25a4d-2b93-4b55-aed7-760a2454dc0a" message='#[payload]'/>
+			</otherwise>
+		</choice>
 		<logger level="INFO" doc:name="End flow" doc:id="97c7ae2f-54fb-4d20-800e-e1f138c421a7" message='#["Start flow PUT users by id with correlationId: " ++ (vars.correlationId default "N/A")]' />
 	</sub-flow>
 	<sub-flow name="patch-users" doc:id="f6e81dca-30a4-452f-bb85-6fabafb8641f" >
